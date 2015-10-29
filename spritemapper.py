@@ -2,17 +2,17 @@ from PIL import Image
 from os import path, makedirs
 
 
-size = (32, 32)
+frame_size = (32, 32)
 filename = 'mega.png'
-myimage = Image.open(filename)
-myimage.load()
+spritesheet = Image.open(filename)
+spritesheet.load()
 processed_directory = 'processed'
 archive_directory = 'archive'
 
-print(myimage.format, myimage.size, myimage.mode)
+print(spritesheet.format, spritesheet.size, spritesheet.mode)
 
-x_tiles = int(myimage.size[0] / size[0])
-y_tiles = int(myimage.size[1] / size[1])
+x_tiles = int(spritesheet.size[0] / frame_size[0])
+y_tiles = int(spritesheet.size[1] / frame_size[1])
 print(x_tiles, y_tiles, sep=',')
 
 if not path.exists(processed_directory):
@@ -25,13 +25,13 @@ tile_number = 0
 for row in range(y_tiles):
     # Process tiles
     for tile in range(x_tiles):
-        left = size[0] * tile
-        top = size[1] * row
-        right = left + size[0]
-        bottom = top + size[1]
+        left = frame_size[0] * tile
+        top = frame_size[1] * row
+        right = left + frame_size[0]
+        bottom = top + frame_size[1]
         box = (left, top, right, bottom)
 
-        tile_image = myimage.crop(box)
+        frame_image = spritesheet.crop(box)
         tile_number += 1
         tile_file = path.join(processed_directory, ''.join([str(tile_number), '.png']))
-        tile_image.save(tile_file)
+        frame_image.save(tile_file)

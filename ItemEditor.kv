@@ -1,0 +1,23 @@
+#kivy 1.9
+<ItemEditorWidget>
+    size_hint: 1.0, 1.0
+    pos_hint: {'center_x': .5, 'center_y': .5}
+    do_default_tab: False
+
+    TabbedPanelItem:
+        text: 'Item Editor'
+        Label:
+            text: 'First tab content area'
+    TabbedPanelItem:
+        text: 'Triage'
+        BoxLayout:
+            Label:
+                text: 'Second tab content area'
+            Button:
+                text: 'Button that does nothing'
+    TabbedPanelItem:
+        text: 'Spritemapper'
+        RstDocument:
+            text:
+                '\\n'.join(("Instructions", "-----------",
+                "Import or export spritemaps based upon import folders and triage items."))

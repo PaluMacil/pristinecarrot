@@ -108,3 +108,6 @@ target/
 
 # Windows simple static server
 simpleServe.exe
+
+# Project stuff
+processed/
