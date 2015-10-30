@@ -1,5 +1,6 @@
 #kivy 1.9
-<ItemEditorWidget>
+
+Root:
     size_hint: 1.0, 1.0
     pos_hint: {'center_x': .5, 'center_y': .5}
     do_default_tab: False
@@ -17,7 +18,37 @@
                 text: 'Button that does nothing'
     TabbedPanelItem:
         text: 'Spritemapper'
-        RstDocument:
-            text:
-                '\\n'.join(("Instructions", "-----------",
-                "Import or export spritemaps based upon import folders and triage items."))
+        FloatLayout:
+            Button:
+                text: 'Compile'
+                size_hint: 0.3, 0.1
+                pos_hint: {"x": 0}
+            Button:
+                text: 'Split'
+                disabled: True
+                pos_hint: {"x": 0.3}
+                size_hint: 0.4, 0.1
+            Button:
+                text: 'Load'
+                size_hint: 0.3, 0.1
+                pos_hint: {"x": 0.7}
+                on_release: root.show_load()
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
