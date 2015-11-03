@@ -94,6 +94,7 @@ coverage.xml
 *,cover
 
 # Translations
+/spritemap.db
 *.mo
 *.pot
 

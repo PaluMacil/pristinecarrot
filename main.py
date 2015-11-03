@@ -6,6 +6,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 from kivy.factory import Factory
 from os.path import join
+from config import db_exists, setup_db
 
 
 class Root(TabbedPanel):
@@ -38,4 +39,6 @@ Factory.register('Root', cls=Root)
 Factory.register('LoadDialog', cls=LoadDialog)
 
 if __name__ == '__main__':
+    if not db_exists():
+        setup_db()
     ItemEditorApp().run()
