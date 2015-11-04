@@ -1,4 +1,5 @@
 #kivy 1.9
+#:import cwd os.getcwd
 
 Root:
     size_hint: 1.0, 1.0
@@ -18,20 +19,30 @@ Root:
                 text: 'Button that does nothing'
     TabbedPanelItem:
         text: 'Spritemaps'
-        FloatLayout:
+        RelativeLayout:
+            BoxLayout:
+                size_hint: 1.0, 0.9
+                pos_hint: {"x": 0, "y": .9 }
+                orientation: "vertical"
+                Button:
+                    text: "Testing Label"
+                    size_hint: 0.3, 0.1
+                Button:
+                    text: "Testing Label"
+                    size_hint: 0.3, 0.1
             Button:
                 text: 'Compile'
                 size_hint: 0.3, 0.1
-                pos_hint: {"x": 0}
+                pos_hint: {"x": 0, "y": 0}
             Button:
                 text: 'Split'
                 disabled: True
-                pos_hint: {"x": 0.3}
+                pos_hint: {"x": 0.3, "y": 0}
                 size_hint: 0.4, 0.1
             Button:
                 text: 'Load'
                 size_hint: 0.3, 0.1
-                pos_hint: {"x": 0.7}
+                pos_hint: {"x": 0.7, "y": 0}
                 on_release: root.show_load()
 
 <LoadDialog>:
@@ -41,6 +52,7 @@ Root:
         orientation: "vertical"
         FileChooserListView:
             id: filechooser
+            path: cwd()
 
         BoxLayout:
             size_hint_y: None

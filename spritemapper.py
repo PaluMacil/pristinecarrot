@@ -3,7 +3,13 @@ from os import path, makedirs
 from config import get_config
 
 
-def import_spritesheet(filename, x_size, y_size):
+def analyze_spritesheet(filename, x_size, y_size):
+    spritesheet = Image.open(filename)
+    spritesheet.load()
+    print("analysis completed... yeah, that's all you get for now")
+
+
+def slice_spritesheet(filename, x_size, y_size):
     spritesheet = Image.open(filename)
     spritesheet.load()
     processed_directory = get_config('processed', 'directory')
