@@ -18,24 +18,64 @@ Root:
             Button:
                 text: 'Button that does nothing'
     TabbedPanelItem:
+        id: 'spritemaps_tab'
         text: 'Spritemaps'
         RelativeLayout:
+            id: 'loaded_spritemap'
             BoxLayout:
-                size_hint: 1.0, 0.9
-                pos_hint: {"x": 0, "y": .9 }
+                id: 'props'
+                size_hint: .95, 0.9
+                pos_hint: {"x": 0, "y": .1 }
                 orientation: "vertical"
-                Button:
-                    text: "Testing Label"
-                    size_hint: 0.3, 0.1
-                Button:
-                    text: "Testing Label"
-                    size_hint: 0.3, 0.1
+                BoxLayout:
+                    id: 'x_px_size'
+                    orientation: "horizontal"
+                    Label:
+                        text: 'X-axis size (px):'
+                    TextInput:
+                        id: 'val'
+                        size_hint: .9, 0.4
+                BoxLayout:
+                    id: 'y_px_size'
+                    orientation: "horizontal"
+                    Label:
+                        text: 'Y-axis size (px):'
+                    TextInput:
+                        size_hint: .9, 0.4
+                BoxLayout:
+                    id: 'path'
+                    orientation: "horizontal"
+                    Label:
+                        text: 'Path:'
+                    Label:
+                        size_hint: .9, 0.4
+                BoxLayout:
+                    id: 'x_tile_size'
+                    orientation: "horizontal"
+                    Label:
+                        text: 'X-axis size (tiles):'
+                    Label:
+                        size_hint: .9, 0.4
+                BoxLayout:
+                    id: 'y_tile_size'
+                    orientation: "horizontal"
+                    Label:
+                        text: 'Y-axis size (tiles):'
+                    Label:
+                        size_hint: .9, 0.4
+                BoxLayout:
+                    id: 'image_mode'
+                    orientation: "horizontal"
+                    Label:
+                        text: 'Image Color Mode'
+                    Label:
+                        size_hint: .9, 0.4
             Button:
                 text: 'Compile'
                 size_hint: 0.3, 0.1
                 pos_hint: {"x": 0, "y": 0}
             Button:
-                text: 'Split'
+                text: 'Split and Import'
                 disabled: True
                 pos_hint: {"x": 0.3, "y": 0}
                 size_hint: 0.4, 0.1

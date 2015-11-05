@@ -24,7 +24,6 @@ class Root(TabbedPanel):
     def load(self, path, filename):
         if len(filename) > 0:
             analyze_spritesheet(join(path, filename[0]), 32, 32)
-
         self.dismiss_popup()
 
 
@@ -36,9 +35,6 @@ class LoadDialog(FloatLayout):
 class PristineCarrotApp(App):
     pass
 
-
-Factory.register('Root', cls=Root)
-Factory.register('LoadDialog', cls=LoadDialog)
 
 if __name__ == '__main__':
     if not db_exists():
