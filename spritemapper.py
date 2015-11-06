@@ -1,30 +1,23 @@
 from PIL import Image
-from os import path, makedirs
+from os import path
 from config import get_config
 
 
 def analyze_spritesheet(filename, x_size, y_size):
     spritesheet = Image.open(filename)
     spritesheet.load()
-    print("analysis completed... yeah, that's all you get for now")
+    x_tiles = int(spritesheet.size[0] / x_size)
+    y_tiles = int(spritesheet.size[1] / y_size)
+    return spritesheet.format, spritesheet.size, spritesheet.mode, x_tiles, y_tiles
 
 
 def slice_spritesheet(filename, x_size, y_size):
     spritesheet = Image.open(filename)
     spritesheet.load()
     processed_directory = get_config('processed', 'directory')
-    archive_directory = get_config('archive', 'directory')
-
-    print(spritesheet.format, spritesheet.size, spritesheet.mode)
 
     x_tiles = int(spritesheet.size[0] / x_size)
     y_tiles = int(spritesheet.size[1] / y_size)
-    print(x_tiles, y_tiles, sep=',')
-
-    if not path.exists(processed_directory):
-        makedirs(processed_directory)
-    if not path.exists(archive_directory):
-        makedirs(archive_directory)
 
     tile_number = 0
     # Process row

@@ -1,5 +1,6 @@
 #kivy 1.9
 #:import cwd os.getcwd
+#:import cfg config.get_config
 
 Root:
     size_hint: 1.0, 1.0
@@ -18,63 +19,81 @@ Root:
             Button:
                 text: 'Button that does nothing'
     TabbedPanelItem:
-        id: 'spritemaps_tab'
+        id: spritemaps_tab
         text: 'Spritemaps'
         RelativeLayout:
-            id: 'loaded_spritemap'
+            id: loaded_spritemap
             BoxLayout:
-                id: 'props'
+                id: props
                 size_hint: .95, 0.9
                 pos_hint: {"x": 0, "y": .1 }
                 orientation: "vertical"
-                BoxLayout:
-                    id: 'x_px_size'
-                    orientation: "horizontal"
+                RelativeLayout:
                     Label:
-                        text: 'X-axis size (px):'
+                        pos_hint: {"x": 0, "y": .5 }
+                        size_hint: .5, 0.4
+                        text: 'X-axis tile size (px):'
                     TextInput:
-                        id: 'val'
-                        size_hint: .9, 0.4
-                BoxLayout:
-                    id: 'y_px_size'
-                    orientation: "horizontal"
+                        id: x_px_size
+                        pos_hint: {"x": .5, "y": .5 }
+                        size_hint: .1, 0.4
+                        text: cfg('default_x_pixels', 'image')
+                RelativeLayout:
                     Label:
-                        text: 'Y-axis size (px):'
+                        pos_hint: {"x": 0, "y": .5 }
+                        size_hint: .5, 0.4
+                        text: 'Y-axis tile size (px):'
                     TextInput:
-                        size_hint: .9, 0.4
-                BoxLayout:
-                    id: 'path'
-                    orientation: "horizontal"
+                        id: y_px_size
+                        pos_hint: {"x": .5, "y": .5 }
+                        size_hint: .1, 0.4
+                        text: cfg('default_y_pixels', 'image')
+                RelativeLayout:
                     Label:
+                        pos_hint: {"x": 0, "y": .5 }
+                        size_hint: .5, 0.4
                         text: 'Path:'
                     Label:
-                        size_hint: .9, 0.4
-                BoxLayout:
-                    id: 'x_tile_size'
-                    orientation: "horizontal"
+                        id: path
+                        pos_hint: {"x": .5, "y": .5 }
+                        text_size: self.size
+                RelativeLayout:
                     Label:
+                        pos_hint: {"x": 0, "y": .5 }
+                        size_hint: .5, 0.4
                         text: 'X-axis size (tiles):'
                     Label:
-                        size_hint: .9, 0.4
-                BoxLayout:
-                    id: 'y_tile_size'
-                    orientation: "horizontal"
+                        id: x_tile_size
+                        halign: 'left'
+                        pos_hint: {"x": .5, "y": .5 }
+                        size_hint: .5, 0.4
+                        text_size: self.size
+                RelativeLayout:
                     Label:
+                        pos_hint: {"x": 0, "y": .5 }
+                        size_hint: .5, 0.4
                         text: 'Y-axis size (tiles):'
                     Label:
-                        size_hint: .9, 0.4
-                BoxLayout:
-                    id: 'image_mode'
-                    orientation: "horizontal"
+                        id: y_tile_size
+                        pos_hint: {"x": .5, "y": .5 }
+                        size_hint: .5, 0.4
+                        text_size: self.size
+                RelativeLayout:
                     Label:
-                        text: 'Image Color Mode'
+                        pos_hint: {"x": 0, "y": .5 }
+                        size_hint: .5, 0.4
+                        text: 'Image Color Mode:'
                     Label:
-                        size_hint: .9, 0.4
+                        id: image_mode
+                        pos_hint: {"x": .5, "y": .5 }
+                        size_hint: .5, 0.4
+                        text_size: self.size
             Button:
                 text: 'Compile'
                 size_hint: 0.3, 0.1
                 pos_hint: {"x": 0, "y": 0}
             Button:
+                id: import_button
                 text: 'Split and Import'
                 disabled: True
                 pos_hint: {"x": 0.3, "y": 0}
@@ -104,3 +123,18 @@ Root:
             Button:
                 text: "Load"
                 on_release: root.load(filechooser.path, filechooser.selection)
+
+<InfoDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            text: root.message
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Okay"
+                on_release: root.okay()
+

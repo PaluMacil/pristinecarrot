@@ -1,5 +1,6 @@
 import sqlite3
 from contextlib import closing
+from os import path, makedirs
 
 conn = sqlite3.connect('spritemap.db')
 
@@ -80,8 +81,38 @@ def get_config(setting_name, category):
     with closing(conn.cursor()) as c:
         c.execute('''
           select setting_value
-          from application_settings
+          from application_setting
           where name = ?
             and setting_type = ?
         ''', (setting_name, category))
-        return c.fetchone()[0]
+        value = c.fetchone()[0]
+        return value
+
+
+def setup_folders():
+    processed_directory = get_config('processed', 'directory')
+    archive_directory = get_config('archive', 'directory')
+    if not path.exists(processed_directory):
+        makedirs(processed_directory)
+    if not path.exists(archive_directory):
+        makedirs(archive_directory)
+
+
+def setup_all():
+    if not db_exists():
+        setup_db()
+    setup_folders()
+
+
+def setup_tabs():
+    # spritemaps_tab
+    x_pixels = get_config('default_x_pixels', 'image')
+    y_pixels = get_config('default_y_pixels', 'image')
+
+
+def insert_newlines(string, every=64):
+    # Strip newlines with: mystring.replace('\n', ' ').replace('\r', '')
+    lines = []
+    for i in range(0, len(string), every):
+        lines.append(string[i:i+every])
+    return '\n'.join(lines)
