@@ -6,7 +6,7 @@ from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
 from kivy.uix.popup import Popup
 from os.path import join
-from config import setup_all, insert_newlines
+from config import setup_all, insert_newlines, purge_processed, reset_database, setup_folders, setup_db
 from spritemapper import analyze_spritesheet
 
 
@@ -16,21 +16,26 @@ class Root(TabbedPanel):
 
     def show_load(self):
 
-        if not self.ids.x_px_size.text or int(self.ids.x_px_size.text) < 1:
-            info_dialog = InfoDialog(okay=self.dismiss_popup,
-                                     message="You must pick x-pixels per tile.")
-            self._popup = Popup(title="Info", content=info_dialog,
-                                size_hint=(0.9, 0.9))
-        elif not self.ids.y_px_size.text or int(self.ids.y_px_size.text) < 1:
-            info_dialog = InfoDialog(okay=self.dismiss_popup,
-                                     message="You must pick y-pixels per tile.")
-            self._popup = Popup(title="Info", content=info_dialog,
-                                size_hint=(0.9, 0.9))
+        if is_int(self.ids.x_px_size.text) and is_int(self.ids.y_px_size.text):
+            if not self.ids.x_px_size.text or int(self.ids.x_px_size.text) < 1:
+                info_dialog = InfoDialog(okay=self.dismiss_popup,
+                                         message="You must pick x-pixels per tile.")
+                self._popup = Popup(title="Info", content=info_dialog,
+                                    size_hint=(0.9, 0.9))
+            elif not self.ids.y_px_size.text or int(self.ids.y_px_size.text) < 1:
+                info_dialog = InfoDialog(okay=self.dismiss_popup,
+                                         message="You must pick y-pixels per tile.")
+                self._popup = Popup(title="Info", content=info_dialog,
+                                    size_hint=(0.9, 0.9))
+            else:
+                load_dialog = LoadDialog(load=self.load, cancel=self.dismiss_popup)
+                self._popup = Popup(title="Load file", content=load_dialog,
+                                    size_hint=(0.9, 0.9))
         else:
-            load_dialog = LoadDialog(load=self.load, cancel=self.dismiss_popup)
-            self._popup = Popup(title="Load file", content=load_dialog,
+            invalid_dialog = InfoDialog(okay=self.dismiss_popup,
+                                        message="You must pick valid pixel values.")
+            self._popup = Popup(title="Invalid Data", content=invalid_dialog,
                                 size_hint=(0.9, 0.9))
-
         self._popup.open()
 
     def load(self, path, filename):
@@ -62,6 +67,14 @@ class Root(TabbedPanel):
             self._popup = Popup(title="Info", content=info_dialog,
                                 size_hint=(0.9, 0.9))
 
+    def reset_db(self):
+        reset_database()
+        setup_db()
+
+    def reset_processed_folder(self):
+        purge_processed()
+        setup_folders()
+
 
 class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
@@ -75,6 +88,13 @@ class InfoDialog(FloatLayout):
 
 class PristineCarrotApp(App):
     pass
+
+
+def is_int(s):
+    s = str(s).strip()
+    return s == '0' \
+        or (s if s.find('..') > -1
+            else s.lstrip('-+').rstrip('0').rstrip('.')).isdigit()
 
 
 if __name__ == '__main__':

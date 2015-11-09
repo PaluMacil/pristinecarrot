@@ -103,6 +103,19 @@ Root:
                 size_hint: 0.3, 0.1
                 pos_hint: {"x": 0.7, "y": 0}
                 on_release: root.show_load()
+    TabbedPanelItem:
+        text: 'Config'
+        BoxLayout:
+            orientation: 'vertical'
+            Button:
+                text: 'Reset Database'
+                size_hint: 0.3, 0.1
+                on_release: root.reset_db()
+            Button:
+                text: 'Reset Processed and Archive'
+                size_hint: 0.3, 0.1
+                on_release: root.reset_processed_folder()
+
 
 <LoadDialog>:
     BoxLayout:
@@ -123,6 +136,7 @@ Root:
             Button:
                 text: "Load"
                 on_release: root.load(filechooser.path, filechooser.selection)
+
 
 <InfoDialog>:
     BoxLayout:

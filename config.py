@@ -1,11 +1,24 @@
 import sqlite3
 from contextlib import closing
-from os import path, makedirs
+from os import path, makedirs, remove
+from shutil import rmtree
 
-conn = sqlite3.connect('spritemap.db')
+db_file = 'spritemap.db'
+
+
+def purge_processed():
+    processed_directory = get_config('processed', 'directory')
+    archive_directory = get_config('archive', 'directory')
+    rmtree(processed_directory)
+    rmtree(archive_directory)
+
+
+def reset_database():
+    remove('spritemap.db')
 
 
 def db_exists():
+    conn = sqlite3.connect(db_file)
     with closing(conn.cursor()) as c:
         c.execute("SELECT count(*) FROM sqlite_master WHERE type='table'")
         count = c.fetchone()
@@ -16,6 +29,7 @@ def db_exists():
 
 
 def setup_db():
+    conn = sqlite3.connect(db_file)
     with closing(conn.cursor()) as c:
         c.executescript("""
             create table sprite_tile (
@@ -78,6 +92,7 @@ def setup_db():
 
 
 def get_config(setting_name, category):
+    conn = sqlite3.connect(db_file)
     with closing(conn.cursor()) as c:
         c.execute('''
           select setting_value
@@ -102,12 +117,6 @@ def setup_all():
     if not db_exists():
         setup_db()
     setup_folders()
-
-
-def setup_tabs():
-    # spritemaps_tab
-    x_pixels = get_config('default_x_pixels', 'image')
-    y_pixels = get_config('default_y_pixels', 'image')
 
 
 def insert_newlines(string, every=64):
