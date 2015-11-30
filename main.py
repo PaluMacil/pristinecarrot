@@ -7,12 +7,23 @@ from kivy.properties import StringProperty
 from kivy.uix.popup import Popup
 from os.path import join
 from config import setup_all, insert_newlines, purge_processed, reset_database, setup_folders, setup_db
-from spritemapper import analyze_spritesheet
+from spritemapper import analyze_spritesheet, slice_spritesheet
 
 
 class Root(TabbedPanel):
     def dismiss_popup(self):
         self._popup.dismiss()
+
+    def split_and_import(self):
+        no_newlines = self.ids.path.text.replace('\n', '')
+        slice_spritesheet(filename=no_newlines,
+                          x_size=int(self.ids.x_px_size.text),
+                          y_size=int(self.ids.y_px_size.text))
+        info_dialog = InfoDialog(okay=self.dismiss_popup,
+                                 message="Tiles have been added to the library.")
+        self._popup = Popup(title="Split and Import", content=info_dialog,
+                            size_hint=(0.9, 0.9))
+        self._popup.open()
 
     def show_load(self):
 

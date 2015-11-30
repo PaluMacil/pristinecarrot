@@ -120,7 +120,7 @@ def setup_all():
 
 
 def insert_newlines(string, every=64):
-    # Strip newlines with: mystring.replace('\n', ' ').replace('\r', '')
+    # Strip newlines with: mystring.replace('\n', '')
     lines = []
     for i in range(0, len(string), every):
         lines.append(string[i:i+every])

@@ -98,6 +98,7 @@ Root:
                 disabled: True
                 pos_hint: {"x": 0.3, "y": 0}
                 size_hint: 0.4, 0.1
+                on_release: root.split_and_import()
             Button:
                 text: 'Load'
                 size_hint: 0.3, 0.1
