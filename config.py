@@ -115,8 +115,8 @@ def set_last_file_index(index):
           SET setting_value = ?
           WHERE setting_type = 'image'
             AND name = 'last_file_index'
-    ''', (str(index)))
-
+        ''', [str(index)])
+    conn.commit()
 
 
 def setup_folders():
