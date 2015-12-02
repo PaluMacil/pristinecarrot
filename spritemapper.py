@@ -8,7 +8,7 @@ def analyze_spritesheet(filename, x_size, y_size):
     spritesheet.load()
     x_tiles = int(spritesheet.size[0] / x_size)
     y_tiles = int(spritesheet.size[1] / y_size)
-    return spritesheet.format, spritesheet.size, spritesheet.mode, x_tiles, y_tiles
+    return spritesheet.mode, x_tiles, y_tiles
 
 
 def slice_spritesheet(filename, x_size, y_size):

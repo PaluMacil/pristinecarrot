@@ -153,3 +153,21 @@ Root:
                 text: "Okay"
                 on_release: root.okay()
 
+
+<InputDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            text: root.message
+            size_hint: .5, 0.4
+        TextInput:
+            id: user_input
+            size_hint: .5, 0.4
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Okay"
+                on_release: root.okay()
