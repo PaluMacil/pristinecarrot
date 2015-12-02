@@ -1,6 +1,6 @@
 from PIL import Image
 from os import path
-from config import get_config
+from config import get_config, set_last_file_index
 
 
 def analyze_spritesheet(filename, x_size, y_size):
@@ -19,7 +19,8 @@ def slice_spritesheet(filename, x_size, y_size):
     x_tiles = int(spritesheet.size[0] / x_size)
     y_tiles = int(spritesheet.size[1] / y_size)
 
-    tile_number = 0
+    filenames_out = []
+    tile_number = get_config('last_file_index', 'image')
     # Process row
     for row in range(y_tiles):
         # Process tiles
@@ -32,5 +33,9 @@ def slice_spritesheet(filename, x_size, y_size):
 
             frame_image = spritesheet.crop(box)
             tile_number += 1
-            tile_file = path.join(processed_directory, ''.join([str(tile_number), '.png']))
+            tile_filename = ''.join([str(tile_number), '.png'])
+            tile_file = path.join(processed_directory, tile_filename)
             frame_image.save(tile_file)
+            filenames_out.append(tile_filename)
+    set_last_file_index(tile_number)
+    return filenames_out
