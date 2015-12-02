@@ -20,7 +20,7 @@ def slice_spritesheet(filename, x_size, y_size):
     y_tiles = int(spritesheet.size[1] / y_size)
 
     filenames_out = []
-    tile_number = get_config('last_file_index', 'image')
+    tile_number = int(get_config('last_file_index', 'image'))
     # Process row
     for row in range(y_tiles):
         # Process tiles
@@ -38,4 +38,5 @@ def slice_spritesheet(filename, x_size, y_size):
             frame_image.save(tile_file)
             filenames_out.append(tile_filename)
     set_last_file_index(tile_number)
+
     return filenames_out
