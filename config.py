@@ -35,7 +35,8 @@ def setup_db():
             create table sprite_tile (
               id INTEGER PRIMARY KEY,
               import_file_id INTEGER,
-              discard BOOLEAN
+              discard BOOLEAN,
+              FOREIGN KEY(import_file_id) REFERENCES import_file(id)
             );
 
             create table sprite_tile_x_object_store (
@@ -55,7 +56,8 @@ def setup_db():
               id INTEGER PRIMARY KEY,
               name TEXT,
               description TEXT,
-              object_store_id INTEGER
+              object_store_id INTEGER,
+              FOREIGN KEY(object_store_id) REFERENCES object_store(id)
             );
 
             create table object_store (
