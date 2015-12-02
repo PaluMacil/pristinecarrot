@@ -89,6 +89,7 @@ def setup_db():
               UNION ALL SELECT 'input_padding','0','image'
               UNION ALL SELECT 'default_x_pixels','32','image'
               UNION ALL SELECT 'default_y_pixels','32','image'
+              UNION ALL SELECT 'last_file_index','0','image'
             ;
             """)
 
@@ -104,6 +105,18 @@ def get_config(setting_name, category):
         ''', (setting_name, category))
         value = c.fetchone()[0]
         return value
+
+
+def set_last_file_index(index):
+    conn = sqlite3.connect(db_file)
+    with closing(conn.cursor()) as c:
+        c.execute('''
+          UPDATE application_setting
+          SET setting_value = ?
+          WHERE setting_type = 'image'
+            AND name = 'last_file_index'
+    ''', (str(index)))
+
 
 
 def setup_folders():
