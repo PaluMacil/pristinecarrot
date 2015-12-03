@@ -155,16 +155,19 @@ Root:
 
 
 <InputDialog>:
-    BoxLayout:
+    RelativeLayout:
         size: root.size
         pos: root.pos
         orientation: "vertical"
         Label:
             text: root.message
-            size_hint: .5, 0.4
+            size_hint: .8, 0.12
+            pos_hint: {"x": .1, "y": .2 }
         TextInput:
             id: user_input
-            size_hint: .5, 0.4
+            text: root.user_input
+            size_hint: .8, 0.12
+            pos_hint: {"x": .1, "y": .4 }
         BoxLayout:
             size_hint_y: None
             height: 30
