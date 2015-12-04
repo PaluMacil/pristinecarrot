@@ -13,11 +13,75 @@ Root:
             text: 'First tab content area'
     TabbedPanelItem:
         text: 'Tile Triage'
-        BoxLayout:
-            Label:
-                text: 'Second tab content area'
-            Button:
-                text: 'Button that does nothing'
+        RelativeLayout:
+            RelativeLayout:
+                size_hint: 1, 0.067
+                pos_hint: {"x": 0, "y": .92 }
+                Label:
+                    pos_hint: {"x": 0 }
+                    size_hint: .083, 1
+                    text: '[b]TileID:[/b]'
+                    markup: True
+                Label:
+                    pos_hint: {"x": 0.083 }
+                    size_hint: .083, 1
+                    text: 'NA'
+                Label:
+                    pos_hint: {"x": 0.166 }
+                    size_hint: .083, 1
+                    text: '[b]ObjectID:[/b]'
+                    markup: True
+                Label:
+                    pos_hint: {"x": 0.249 }
+                    size_hint: .083, 1
+                    text: 'NA'
+                Spinner:
+                    pos_hint: {"x": 0.338 }
+                    size_hint: .247, 1
+                    text: '(select batch)'
+                    values: 'test1', 'test2'
+                Label:
+                    pos_hint: {"x": 0.593 }
+                    size_hint: .083, 1
+                    text: '[b]Hide:[/b]'
+                    markup: True
+                CheckBox:
+                    pos_hint: {"x": 0.664 }
+                    size_hint: .04, 1
+                    active: True
+                Label:
+                    pos_hint: {"x": 0.712 }
+                    size_hint: .083, 1
+                    text: 'Committed'
+                CheckBox:
+                    pos_hint: {"x": 0.815 }
+                    size_hint: .040, 1
+                    active: True
+                Label:
+                    pos_hint: {"x": 0.860 }
+                    size_hint: .083, 1
+                    text: 'Discarded'
+            BoxLayout:
+                size_hint: .900, .200
+                pos_hint: {"x": .050, "y": .033 }
+                BoxLayout:
+                    orientation: "vertical"
+                    Button:
+                        text: 'Resize'
+                    Button:
+                        text: 'Attach'
+                    Button:
+                        text: 'Detach All'
+                BoxLayout:
+                    orientation: "vertical"
+                    Button:
+                        text: 'Commit'
+                    Button:
+                        text: 'Discard'
+                    Button:
+                        text: 'Re-triage'
+                Image:
+                    source: 'nav-keys.png'
     TabbedPanelItem:
         id: spritemaps_tab
         text: 'Spritemaps'
