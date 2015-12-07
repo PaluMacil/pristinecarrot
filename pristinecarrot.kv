@@ -1,6 +1,7 @@
 #kivy 1.9
 #:import cwd os.getcwd
 #:import cfg config.get_config
+#:import batches config.get_import_file_names
 
 Root:
     size_hint: 1.0, 1.0
@@ -36,10 +37,11 @@ Root:
                     size_hint: .083, 1
                     text: 'NA'
                 Spinner:
+                    id: triage_batch_spinner
                     pos_hint: {"x": 0.338 }
                     size_hint: .247, 1
                     text: '(select batch)'
-                    values: 'test1', 'test2'
+                    values: batches()
                 Label:
                     pos_hint: {"x": 0.593 }
                     size_hint: .083, 1

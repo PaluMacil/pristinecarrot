@@ -140,3 +140,17 @@ def insert_newlines(string, every=64):
     for i in range(0, len(string), every):
         lines.append(string[i:i+every])
     return '\n'.join(lines)
+
+
+def get_import_file_names():
+    conn = sqlite3.connect(db_file)
+    with closing(conn.cursor()) as c:
+        c.execute('''
+          SELECT name FROM import_file
+          ''')
+        result = c.fetchall()
+    return [name[0] for name in result]
+
+
+def get_import_file_id():
+    pass

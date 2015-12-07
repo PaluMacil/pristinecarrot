@@ -8,7 +8,8 @@ from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
 from kivy.uix.popup import Popup
 from os.path import join
-from config import setup_all, insert_newlines, purge_processed, reset_database, setup_folders, setup_db
+from config import setup_all, insert_newlines, purge_processed, \
+    reset_database, setup_folders, setup_db, get_import_file_names
 from spritemapper import analyze_spritesheet, slice_spritesheet
 from database import ImportFile, SpriteTile, db
 from os.path import basename
@@ -76,6 +77,7 @@ class Root(TabbedPanel):
         self.popup = Popup(title="Split and Import: Complete", content=info_dialog,
                            size_hint=(0.9, 0.7))
         self.popup.open()
+        self.ids.triage_batch_spinner.values.append(self.new_file_name)
 
     def show_load(self):
 
