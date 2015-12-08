@@ -35,42 +35,27 @@ def setup_db():
             create table sprite_tile (
               id INTEGER PRIMARY KEY,
               import_file_id INTEGER,
-              discard BOOLEAN,
-              FOREIGN KEY(import_file_id) REFERENCES import_file(id)
-            );
-
-            create table sprite_tile_x_object_store (
-              id INTEGER PRIMARY KEY,
-              sprite_tile_id INTEGER,
               game_object_id INTEGER,
-              x INTEGER,
-              y INTEGER,
-              main BOOLEAN,
-              committed BOOLEAN,
-              FOREIGN KEY(sprite_tile_id) REFERENCES sprite_tile(id),
+              tile_number INTEGER,
+              discard BOOLEAN,
               FOREIGN KEY(game_object_id) REFERENCES game_object(id),
-              UNIQUE (sprite_tile_id, game_object_id)
+              FOREIGN KEY(import_file_id) REFERENCES import_file(id)
             );
 
             create table game_object (
               id INTEGER PRIMARY KEY,
               name TEXT,
               description TEXT,
-              object_store_id INTEGER,
-              FOREIGN KEY(object_store_id) REFERENCES object_store(id)
-            );
-
-            create table object_store (
-              id INTEGER PRIMARY KEY,
-              version TEXT NOT NULL,
-              x_size INTEGER,
-              y_size INTEGER
+              committed BOOLEAN,
+              size INTEGER
             );
 
             create table import_file (
               id INTEGER PRIMARY KEY,
               name TEXT NOT NULL,
-              license TEXT
+              license TEXT,
+              row_size INTEGER,
+              UNIQUE (name)
             );
 
             create table application_setting (

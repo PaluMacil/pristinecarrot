@@ -16,6 +16,10 @@ Root:
         text: 'Tile Triage'
         RelativeLayout:
             RelativeLayout:
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                size_hint: .9, .9
+                id: triage_area
+            RelativeLayout:
                 size_hint: 1, 0.067
                 pos_hint: {"x": 0, "y": .92 }
                 Label:
@@ -42,6 +46,7 @@ Root:
                     size_hint: .247, 1
                     text: '(select batch)'
                     values: batches()
+                    on_text: root.select_batch(self.text, triage_area)
                 Label:
                     pos_hint: {"x": 0.593 }
                     size_hint: .083, 1
@@ -63,6 +68,7 @@ Root:
                     pos_hint: {"x": 0.860 }
                     size_hint: .083, 1
                     text: 'Discarded'
+
             BoxLayout:
                 size_hint: .900, .200
                 pos_hint: {"x": .050, "y": .033 }
@@ -83,7 +89,7 @@ Root:
                     Button:
                         text: 'Re-triage'
                 Image:
-                    source: 'nav-keys.png'
+                    source: 'resources/nav-keys.png'
     TabbedPanelItem:
         id: spritemaps_tab
         text: 'Spritemaps'
@@ -240,3 +246,44 @@ Root:
             Button:
                 text: "Okay"
                 on_release: root.okay()
+
+<TilesV1@BoxLayout>
+    image1: 'resources/question_mark.png'
+    pos_hint: {'center_x': .5, 'center_y': .6}
+    size_hint: None, None
+    Image:
+        size_hint: None, None
+        size: dp(64),dp(64)
+        allow_stretch: True
+        source: root.image1
+
+<TilesV2@BoxLayout>
+    image1: 'resources/question_mark.png'
+    image2: 'resources/question_mark.png'
+    image3: 'resources/question_mark.png'
+    image4: 'resources/question_mark.png'
+    pos_hint: {'center_x': .5, 'center_y': .6}
+    size_hint: None, None
+    orientation: "vertical"
+    BoxLayout
+        orientation: "horizontal"
+        Image:
+            size: dp(64),dp(64)
+            allow_stretch: True
+            source: root.image1
+        Image:
+            size: dp(64),dp(64)
+            allow_stretch: True
+            source: root.image2
+    BoxLayout
+        orientation: "horizontal"
+        Image:
+            size: dp(64),dp(64)
+            allow_stretch: True
+            source: root.image3
+        Image:
+            size: dp(64),dp(64)
+            allow_stretch: True
+            source: root.image4
+
+<TilesV3@Image>

@@ -1,6 +1,6 @@
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, join, select
 from config import db_file
 
 
@@ -11,9 +11,20 @@ db = Session(engine)
 
 GameObject = Base.classes.game_object
 ImportFile = Base.classes.import_file
-ObjectStore = Base.classes.object_store
 SpriteTile = Base.classes.sprite_tile
-SpriteTileObjectStore = Base.classes.sprite_tile_x_object_store
+
+
+def get_first_object(batch, ignore_committed=None, ignore_discarded=None):
+    if ignore_committed is None:
+        ignore_committed = True
+    if ignore_discarded is None:
+        ignore_discarded = True
+
+    if ignore_committed and ignore_discarded:
+        object = join(SpriteTile, ImportFile, GameObject).select(
+            (ImportFile.c.name == batch) &
+            (GameObject.c.committed == False) &
+            (SpriteTile.c.discard == False))
 
 
 if __name__ == '__main__':

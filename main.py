@@ -7,11 +7,12 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
 from kivy.uix.popup import Popup
+from kivy.factory import Factory
 from os.path import join
 from config import setup_all, insert_newlines, purge_processed, \
-    reset_database, setup_folders, setup_db, get_import_file_names
+    reset_database, setup_folders, setup_db
 from spritemapper import analyze_spritesheet, slice_spritesheet
-from database import ImportFile, SpriteTile, db
+from database import ImportFile, SpriteTile, GameObject, db
 from os.path import basename
 
 
@@ -62,11 +63,20 @@ class Root(TabbedPanel):
         input_text = popup.children[0].children[0].children[0].children[0].children[1].text
         if input_text:
             self.new_file_name = input_text
-        import_file = ImportFile(name=self.new_file_name, license=self.new_file_license)
+        import_file = ImportFile(name=self.new_file_name, license=self.new_file_license,
+                                 row_size=int(self.ids.x_tile_size.text))
         db.add(import_file)
         for file in self.new_files:
             file_index = basename(file).split('.')[0]
-            sprite_tile = SpriteTile(id=file_index, discard=False, import_file=import_file)
+            game_object = GameObject(id=file_index,
+                                     name='(no name)',
+                                     description='(no description)',
+                                     committed=False,
+                                     size=1)
+            sprite_tile = SpriteTile(id=file_index,
+                                     discard=False,
+                                     import_file=import_file,
+                                     game_object=game_object)
             db.add(sprite_tile)
         db.commit()
         self.split_complete()
@@ -129,6 +139,11 @@ class Root(TabbedPanel):
                                      message="Could not load file.")
             self.popup = Popup(title="Info", content=info_dialog,
                                size_hint=(0.9, 0.7))
+
+    def select_batch(self, batch, triage_area):
+        image_area = Factory.TilesV1()
+        triage_area.clear_widgets()
+        triage_area.add_widget(image_area)
 
     def on_keyboard_down(self, keyboard, keycode, text, modifiers):
 
