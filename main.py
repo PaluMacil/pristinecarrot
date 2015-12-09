@@ -10,9 +10,9 @@ from kivy.uix.popup import Popup
 from kivy.factory import Factory
 from os.path import join
 from config import setup_all, insert_newlines, purge_processed, \
-    reset_database, setup_folders, setup_db
+    reset_database, setup_folders, setup_db, get_config
 from spritemapper import analyze_spritesheet, slice_spritesheet
-from database import ImportFile, SpriteTile, GameObject, db
+from database import ImportFile, SpriteTile, GameObject, db, get_first_object
 from os.path import basename
 
 
@@ -75,6 +75,7 @@ class Root(TabbedPanel):
                                      size=1)
             sprite_tile = SpriteTile(id=file_index,
                                      discard=False,
+                                     tile_number=1,
                                      import_file=import_file,
                                      game_object=game_object)
             db.add(sprite_tile)
@@ -141,9 +142,41 @@ class Root(TabbedPanel):
                                size_hint=(0.9, 0.7))
 
     def select_batch(self, batch, triage_area):
-        image_area = Factory.TilesV1()
         triage_area.clear_widgets()
-        triage_area.add_widget(image_area)
+        first_object = get_first_object(batch)
+        if first_object:
+            if first_object[0].game_object.size == 1:
+                image_area = Factory.TilesV1()
+                image1 = self.get_image_for(first_object, 1)
+                if image1:
+                    image_area.image1 = image1
+            if first_object[0].game_object.size == 2:
+                image_area = Factory.TilesV2()
+                image1 = self.get_image_for(first_object, 1)
+                if image1:
+                    image_area.image1 = image1
+                image2 = self.get_image_for(first_object, 2)
+                if image2:
+                    image_area.image2 = image2
+                image3 = self.get_image_for(first_object, 3)
+                if image3:
+                    image_area.image3 = image3
+                image4 = self.get_image_for(first_object, 4)
+                if image4:
+                    image_area.image4 = image4
+            if first_object[0].game_object.size == 3:
+                image_area = Factory.TilesV3()
+                image1 = self.get_image_for(first_object, 1)
+                if image1:
+                    image_area.image1 = image1
+            triage_area.add_widget(image_area)
+
+    def get_image_for(self, object_data, tile_number):
+        for row in object_data:
+            if row.sprite_tile.tile_number == tile_number:
+                return join(get_config('processed', 'directory'), str(row.sprite_tile.id) + '.png')
+        else:
+            return None
 
     def on_keyboard_down(self, keyboard, keycode, text, modifiers):
 

@@ -1,6 +1,6 @@
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, join, select
+from sqlalchemy import create_engine, join, select, func
 from config import db_file
 
 
@@ -21,10 +21,48 @@ def get_first_object(batch, ignore_committed=None, ignore_discarded=None):
         ignore_discarded = True
 
     if ignore_committed and ignore_discarded:
-        object = join(SpriteTile, ImportFile, GameObject).select(
-            (ImportFile.c.name == batch) &
-            (GameObject.c.committed == False) &
-            (SpriteTile.c.discard == False))
+        min_sprite_tile_id = (db.query(func.min(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(ImportFile.name == batch)
+                                .filter(GameObject.committed == False)
+                                .filter(SpriteTile.discard == False)
+                                ).scalar()
+    elif ignore_committed:
+        min_sprite_tile_id = (db.query(func.min(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(ImportFile.name == batch)
+                                .filter(GameObject.committed == False)
+                                ).scalar()
+    elif ignore_discarded:
+        min_sprite_tile_id = (db.query(func.min(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(ImportFile.name == batch)
+                                .filter(SpriteTile.discard == False)
+                                ).scalar()
+    else:
+        min_sprite_tile_id = (db.query(func.min(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(ImportFile.name == batch)
+                                ).scalar()
+    if not min_sprite_tile_id:
+        return None
+    game_object_data = (db.query(GameObject, SpriteTile)
+                        .join(SpriteTile)
+                        .filter(SpriteTile.game_object_id == min_sprite_tile_id)
+                        ).all()
+    return game_object_data
+
+
+def get_tile_col_num(row_size, tile_id):
+    modulo = tile_id % row_size
+    if modulo == 0:
+        return row_size
+    else:
+        return modulo
 
 
 if __name__ == '__main__':
