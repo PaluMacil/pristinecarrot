@@ -28,7 +28,10 @@ class Root(TabbedPanel):
         self.new_file_name = 'untitled'
         self.new_file_license = 'unknown'
         # Triage Tab:
+        self.triage_area = None
         self.triage_batches = []
+        self.current_object = None
+        self.current_tile_id = None
 
     def dismiss_popup(self):
         self.popup.dismiss()
@@ -143,35 +146,43 @@ class Root(TabbedPanel):
 
     def select_batch(self, batch, triage_area):
         triage_area.clear_widgets()
-        first_object = get_first_object(batch)
-        if first_object:
-            if first_object[0].game_object.size == 1:
+        self.current_object, self.current_tile_id = get_first_object(batch)
+        self.update_triage_area(triage_area)
+
+    def update_triage_area(self, triage_area):
+        if self.current_object:
+            self.current_object = self.current_object
+            self.triage_area = triage_area
+            if self.current_object[0].game_object.size == 1:
                 image_area = Factory.TilesV1()
-                image1 = self.get_image_for(first_object, 1)
+                image1 = self.get_image_for(self.current_object, 1)
                 if image1:
                     image_area.image1 = image1
-            if first_object[0].game_object.size == 2:
+            if self.current_object[0].game_object.size == 2:
                 image_area = Factory.TilesV2()
-                image1 = self.get_image_for(first_object, 1)
+                image1 = self.get_image_for(self.current_object, 1)
                 if image1:
                     image_area.image1 = image1
-                image2 = self.get_image_for(first_object, 2)
+                image2 = self.get_image_for(self.current_object, 2)
                 if image2:
                     image_area.image2 = image2
-                image3 = self.get_image_for(first_object, 3)
+                image3 = self.get_image_for(self.current_object, 3)
                 if image3:
                     image_area.image3 = image3
-                image4 = self.get_image_for(first_object, 4)
+                image4 = self.get_image_for(self.current_object, 4)
                 if image4:
                     image_area.image4 = image4
-            if first_object[0].game_object.size == 3:
+            if self.current_object[0].game_object.size == 3:
+                # TODO: Finish size 3 triage code.
                 image_area = Factory.TilesV3()
-                image1 = self.get_image_for(first_object, 1)
+                image1 = self.get_image_for(self.current_object, 1)
                 if image1:
                     image_area.image1 = image1
-            triage_area.add_widget(image_area)
+            if image_area:
+                triage_area.add_widget(image_area)
 
-    def get_image_for(self, object_data, tile_number):
+    @staticmethod
+    def get_image_for(object_data, tile_number):
         for row in object_data:
             if row.sprite_tile.tile_number == tile_number:
                 return join(get_config('processed', 'directory'), str(row.sprite_tile.id) + '.png')
@@ -180,17 +191,19 @@ class Root(TabbedPanel):
 
     def on_keyboard_down(self, keyboard, keycode, text, modifiers):
 
-        # TODO: Check for active tab
-        if keycode[1] == 'left':
-            pass
-        elif keycode[1] == 'right':
-            pass
-        elif keycode[1] == 'up':
-            pass
-        elif keycode[1] == 'down':
-            pass
-        else:
-            return False
+        if  self.get_current_tab().text == 'Tile Triage':
+            if keycode[1] == 'left':
+                pass
+            elif keycode[1] == 'right':
+                # update_triage_area()
+                test = App.get_running_app().root.ids.triage_area
+                pass
+            elif keycode[1] == 'up':
+                pass
+            elif keycode[1] == 'down':
+                pass
+            else:
+                return False
         return True
 
     @staticmethod
