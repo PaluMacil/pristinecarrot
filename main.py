@@ -13,7 +13,7 @@ from config import setup_all, insert_newlines, purge_processed, \
     reset_database, setup_folders, setup_db, get_config
 from spritemapper import analyze_spritesheet, slice_spritesheet
 from database import ImportFile, SpriteTile, GameObject, db, \
-    get_first_object, get_right_object, get_left_object
+    get_first_object, get_right_object, get_left_object, get_up_object, get_down_object
 from os.path import basename
 
 
@@ -209,9 +209,17 @@ class Root(TabbedPanel):
                         self.current_object, self.current_tile_id = next_object, next_tile_id
                         self.update_triage_area(triage_area)
                 elif keycode[1] == 'up':
-                    pass
+                    next_object, next_tile_id = get_up_object(batch, self.current_tile_id)
+                    if next_object and next_tile_id:
+                        triage_area.clear_widgets()
+                        self.current_object, self.current_tile_id = next_object, next_tile_id
+                        self.update_triage_area(triage_area)
                 elif keycode[1] == 'down':
-                    pass
+                    next_object, next_tile_id = get_down_object(batch, self.current_tile_id)
+                    if next_object and next_tile_id:
+                        triage_area.clear_widgets()
+                        self.current_object, self.current_tile_id = next_object, next_tile_id
+                        self.update_triage_area(triage_area)
                 else:
                     return False
         return True

@@ -151,6 +151,112 @@ def get_right_object(batch, current_tile_id, ignore_committed=None, ignore_disca
     return game_object_data, next_sprite_tile_id
 
 
+def get_up_object(batch, current_tile_id, ignore_committed=None, ignore_discarded=None):
+    if ignore_committed is None:
+        ignore_committed = True
+    if ignore_discarded is None:
+        ignore_discarded = True
+
+    row_size = (db.query(ImportFile.row_size)).filter(ImportFile.name == batch).first()[0]
+
+    if ignore_committed and ignore_discarded:
+        next_sprite_tile_id = (db.query(func.max(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(SpriteTile.id % row_size == current_tile_id % row_size)
+                                .filter(SpriteTile.id < current_tile_id)
+                                .filter(ImportFile.name == batch)
+                                .filter(GameObject.committed == False)
+                                .filter(SpriteTile.discard == False)
+                                ).scalar()
+    elif ignore_committed:
+        next_sprite_tile_id = (db.query(func.max(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(SpriteTile.id % row_size == current_tile_id % row_size)
+                                .filter(SpriteTile.id < current_tile_id)
+                                .filter(ImportFile.name == batch)
+                                .filter(GameObject.committed == False)
+                                ).scalar()
+    elif ignore_discarded:
+        next_sprite_tile_id = (db.query(func.max(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(SpriteTile.id % row_size == current_tile_id % row_size)
+                                .filter(SpriteTile.id < current_tile_id)
+                                .filter(ImportFile.name == batch)
+                                .filter(SpriteTile.discard == False)
+                                ).scalar()
+    else:
+        next_sprite_tile_id = (db.query(func.max(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(SpriteTile.id % row_size == current_tile_id % row_size)
+                                .filter(SpriteTile.id < current_tile_id)
+                                .filter(ImportFile.name == batch)
+                                ).scalar()
+    if not next_sprite_tile_id:
+        return None, None
+    game_object_data = (db.query(GameObject, SpriteTile)
+                        .join(SpriteTile)
+                        .filter(SpriteTile.game_object_id == next_sprite_tile_id)
+                        ).all()
+    return game_object_data, next_sprite_tile_id
+
+
+def get_down_object(batch, current_tile_id, ignore_committed=None, ignore_discarded=None):
+    if ignore_committed is None:
+        ignore_committed = True
+    if ignore_discarded is None:
+        ignore_discarded = True
+
+    row_size = (db.query(ImportFile.row_size)).filter(ImportFile.name == batch).first()[0]
+
+    if ignore_committed and ignore_discarded:
+        next_sprite_tile_id = (db.query(func.min(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(SpriteTile.id % row_size == current_tile_id % row_size)
+                                .filter(SpriteTile.id > current_tile_id)
+                                .filter(ImportFile.name == batch)
+                                .filter(GameObject.committed == False)
+                                .filter(SpriteTile.discard == False)
+                                ).scalar()
+    elif ignore_committed:
+        next_sprite_tile_id = (db.query(func.min(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(SpriteTile.id % row_size == current_tile_id % row_size)
+                                .filter(SpriteTile.id > current_tile_id)
+                                .filter(ImportFile.name == batch)
+                                .filter(GameObject.committed == False)
+                                ).scalar()
+    elif ignore_discarded:
+        next_sprite_tile_id = (db.query(func.min(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(SpriteTile.id % row_size == current_tile_id % row_size)
+                                .filter(SpriteTile.id > current_tile_id)
+                                .filter(ImportFile.name == batch)
+                                .filter(SpriteTile.discard == False)
+                                ).scalar()
+    else:
+        next_sprite_tile_id = (db.query(func.min(SpriteTile.id))
+                                .join(GameObject)
+                                .join(ImportFile)
+                                .filter(SpriteTile.id % row_size == current_tile_id % row_size)
+                                .filter(SpriteTile.id > current_tile_id)
+                                .filter(ImportFile.name == batch)
+                                ).scalar()
+    if not next_sprite_tile_id:
+        return None, None
+    game_object_data = (db.query(GameObject, SpriteTile)
+                        .join(SpriteTile)
+                        .filter(SpriteTile.game_object_id == next_sprite_tile_id)
+                        ).all()
+    return game_object_data, next_sprite_tile_id
+
+
 def get_tile_col_num(row_size, tile_id):
     modulo = tile_id % row_size
     if modulo == 0:
