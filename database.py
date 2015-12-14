@@ -49,7 +49,7 @@ def get_first_object(batch, ignore_committed=None, ignore_discarded=None):
                                 .filter(ImportFile.name == batch)
                                 ).scalar()
     if not min_sprite_tile_id:
-        return None
+        return None, None
     game_object_data = (db.query(GameObject, SpriteTile)
                         .join(SpriteTile)
                         .filter(SpriteTile.game_object_id == min_sprite_tile_id)
@@ -96,7 +96,7 @@ def get_left_object(batch, current_tile_id, ignore_committed=None, ignore_discar
                                 .filter(ImportFile.name == batch)
                                 ).scalar()
     if not next_sprite_tile_id:
-        return None
+        return None, None
     game_object_data = (db.query(GameObject, SpriteTile)
                         .join(SpriteTile)
                         .filter(SpriteTile.game_object_id == next_sprite_tile_id)
@@ -143,7 +143,7 @@ def get_right_object(batch, current_tile_id, ignore_committed=None, ignore_disca
                                 .filter(ImportFile.name == batch)
                                 ).scalar()
     if not next_sprite_tile_id:
-        return None
+        return None, None
     game_object_data = (db.query(GameObject, SpriteTile)
                         .join(SpriteTile)
                         .filter(SpriteTile.game_object_id == next_sprite_tile_id)

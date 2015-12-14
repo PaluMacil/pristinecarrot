@@ -12,7 +12,8 @@ from os.path import join
 from config import setup_all, insert_newlines, purge_processed, \
     reset_database, setup_folders, setup_db, get_config
 from spritemapper import analyze_spritesheet, slice_spritesheet
-from database import ImportFile, SpriteTile, GameObject, db, get_first_object
+from database import ImportFile, SpriteTile, GameObject, db, \
+    get_first_object, get_right_object, get_left_object
 from os.path import basename
 
 
@@ -191,19 +192,28 @@ class Root(TabbedPanel):
 
     def on_keyboard_down(self, keyboard, keycode, text, modifiers):
 
-        if  self.get_current_tab().text == 'Tile Triage':
-            if keycode[1] == 'left':
-                pass
-            elif keycode[1] == 'right':
-                # update_triage_area()
-                test = App.get_running_app().root.ids.triage_area
-                pass
-            elif keycode[1] == 'up':
-                pass
-            elif keycode[1] == 'down':
-                pass
-            else:
-                return False
+        if self.get_current_tab().text == 'Tile Triage':
+            triage_area = App.get_running_app().root.ids.triage_area
+            batch = App.get_running_app().root.ids.triage_batch_spinner.text
+            if batch != '(select batch)':
+                if keycode[1] == 'left':
+                    next_object, next_tile_id = get_left_object(batch, self.current_tile_id)
+                    if next_object and next_tile_id:
+                        triage_area.clear_widgets()
+                        self.current_object, self.current_tile_id = next_object, next_tile_id
+                        self.update_triage_area(triage_area)
+                elif keycode[1] == 'right':
+                    next_object, next_tile_id = get_right_object(batch, self.current_tile_id)
+                    if next_object and next_tile_id:
+                        triage_area.clear_widgets()
+                        self.current_object, self.current_tile_id = next_object, next_tile_id
+                        self.update_triage_area(triage_area)
+                elif keycode[1] == 'up':
+                    pass
+                elif keycode[1] == 'down':
+                    pass
+                else:
+                    return False
         return True
 
     @staticmethod
