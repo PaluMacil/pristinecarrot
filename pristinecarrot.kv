@@ -21,13 +21,14 @@ Root:
                 id: triage_area
             RelativeLayout:
                 size_hint: 1, 0.067
-                pos_hint: {"x": 0, "y": .92 }
+                pos_hint: {"x": 0, "y": .930 }
                 Label:
                     pos_hint: {"x": 0 }
                     size_hint: .083, 1
                     text: '[b]TileID:[/b]'
                     markup: True
                 Label:
+                    id: triage_tile_id
                     pos_hint: {"x": 0.083 }
                     size_hint: .083, 1
                     text: 'NA'
@@ -37,6 +38,7 @@ Root:
                     text: '[b]ObjectID:[/b]'
                     markup: True
                 Label:
+                    id: triage_object_id
                     pos_hint: {"x": 0.249 }
                     size_hint: .083, 1
                     text: 'NA'
@@ -56,6 +58,7 @@ Root:
                     pos_hint: {"x": 0.664 }
                     size_hint: .04, 1
                     active: True
+                    on_active: root.on_checkbox_active('committed', self.active)
                 Label:
                     pos_hint: {"x": 0.712 }
                     size_hint: .083, 1
@@ -64,6 +67,7 @@ Root:
                     pos_hint: {"x": 0.815 }
                     size_hint: .040, 1
                     active: True
+                    on_active: root.on_checkbox_active('discarded', self.active)
                 Label:
                     pos_hint: {"x": 0.860 }
                     size_hint: .083, 1
@@ -84,10 +88,13 @@ Root:
                     orientation: "vertical"
                     Button:
                         text: 'Commit'
+                        on_release: root.commit()
                     Button:
                         text: 'Discard'
+                        on_release: root.discard()
                     Button:
                         text: 'Re-triage'
+                        on_release: root.retriage()
                 Image:
                     source: 'resources/nav-keys.png'
     TabbedPanelItem:

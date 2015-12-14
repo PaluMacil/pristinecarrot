@@ -13,7 +13,8 @@ from config import setup_all, insert_newlines, purge_processed, \
     reset_database, setup_folders, setup_db, get_config
 from spritemapper import analyze_spritesheet, slice_spritesheet
 from database import ImportFile, SpriteTile, GameObject, db, \
-    get_first_object, get_right_object, get_left_object, get_up_object, get_down_object
+    get_first_object, get_right_object, get_left_object, get_up_object, get_down_object, \
+    commit_game_object, discard_tile
 from os.path import basename
 
 
@@ -33,6 +34,8 @@ class Root(TabbedPanel):
         self.triage_batches = []
         self.current_object = None
         self.current_tile_id = None
+        self.ignore_committed = True
+        self.ignore_discarded = True
 
     def dismiss_popup(self):
         self.popup.dismiss()
@@ -147,13 +150,16 @@ class Root(TabbedPanel):
 
     def select_batch(self, batch, triage_area):
         triage_area.clear_widgets()
-        self.current_object, self.current_tile_id = get_first_object(batch)
+        self.current_object, self.current_tile_id = get_first_object(batch,
+                                                                     ignore_committed=self.ignore_committed,
+                                                                     ignore_discarded=self.ignore_discarded)
         self.update_triage_area(triage_area)
 
     def update_triage_area(self, triage_area):
         if self.current_object:
-            self.current_object = self.current_object
             self.triage_area = triage_area
+            self.ids.triage_tile_id.text = str(self.current_tile_id)
+            self.ids.triage_object_id.text = str(self.current_object[0].game_object.id)
             if self.current_object[0].game_object.size == 1:
                 image_area = Factory.TilesV1()
                 image1 = self.get_image_for(self.current_object, 1)
@@ -197,25 +203,33 @@ class Root(TabbedPanel):
             batch = App.get_running_app().root.ids.triage_batch_spinner.text
             if batch != '(select batch)':
                 if keycode[1] == 'left':
-                    next_object, next_tile_id = get_left_object(batch, self.current_tile_id)
+                    next_object, next_tile_id = get_left_object(batch, self.current_tile_id,
+                                                                ignore_committed=self.ignore_committed,
+                                                                ignore_discarded=self.ignore_discarded)
                     if next_object and next_tile_id:
                         triage_area.clear_widgets()
                         self.current_object, self.current_tile_id = next_object, next_tile_id
                         self.update_triage_area(triage_area)
                 elif keycode[1] == 'right':
-                    next_object, next_tile_id = get_right_object(batch, self.current_tile_id)
+                    next_object, next_tile_id = get_right_object(batch, self.current_tile_id,
+                                                                 ignore_committed=self.ignore_committed,
+                                                                 ignore_discarded=self.ignore_discarded)
                     if next_object and next_tile_id:
                         triage_area.clear_widgets()
                         self.current_object, self.current_tile_id = next_object, next_tile_id
                         self.update_triage_area(triage_area)
                 elif keycode[1] == 'up':
-                    next_object, next_tile_id = get_up_object(batch, self.current_tile_id)
+                    next_object, next_tile_id = get_up_object(batch, self.current_tile_id,
+                                                              ignore_committed=self.ignore_committed,
+                                                              ignore_discarded=self.ignore_discarded)
                     if next_object and next_tile_id:
                         triage_area.clear_widgets()
                         self.current_object, self.current_tile_id = next_object, next_tile_id
                         self.update_triage_area(triage_area)
                 elif keycode[1] == 'down':
-                    next_object, next_tile_id = get_down_object(batch, self.current_tile_id)
+                    next_object, next_tile_id = get_down_object(batch, self.current_tile_id,
+                                                                ignore_committed=self.ignore_committed,
+                                                                ignore_discarded=self.ignore_discarded)
                     if next_object and next_tile_id:
                         triage_area.clear_widgets()
                         self.current_object, self.current_tile_id = next_object, next_tile_id
@@ -223,6 +237,27 @@ class Root(TabbedPanel):
                 else:
                     return False
         return True
+
+    def commit(self):
+        commit_game_object(self.current_object[0].game_object.id)
+
+    def discard(self):
+        discard_tile(self.current_tile_id)
+
+    def retriage(self):
+        pass
+
+    def on_checkbox_active(self, checkbox, active):
+        if checkbox == 'discarded':
+            if active:
+                self.ignore_discarded = True
+            else:
+                self.ignore_discarded = False
+        if checkbox == 'committed':
+            if active:
+                self.ignore_committed = True
+            else:
+                self.ignore_committed = False
 
     @staticmethod
     def reset_db():
