@@ -268,7 +268,7 @@ class Root(TabbedPanel):
 
     def retriage(self):
         committed = self.current_object[0].game_object.committed
-        discarded = self.current_object[0].game_object.discard
+        discarded = self.current_object[0].sprite_tile.discard
         if discarded:
             retriage_tile(self.current_tile_id)
         if committed:
