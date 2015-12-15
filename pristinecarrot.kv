@@ -68,14 +68,60 @@ Root:
                     pos_hint: {"x": 0.860 }
                     size_hint: .083, 1
                     text: 'Discarded'
-            RelativeLayout:
+            BoxLayout:
+                orientation: "vertical"
                 pos_hint: {"x": 0, "y": .2 }
-                size_hint: .25, .733
-                Label:
-                    pos_hint: {"x": 0, "y": .1}
-                    size_hint: .083, 1
-                    text: '[b]Discarded:[/b] '
-                    markup: True
+                size_hint: .1, .733
+                BoxLayout:
+                    Label:
+                        text: '[b]Committed:[/b] '
+                        markup: True
+                        size_hint: None, None
+                    Label:
+                        text: 'False'
+                        size_hint: None, None
+                BoxLayout:
+                    Label:
+                        size_hint: None, None
+                        text: '[b]Discarded:[/b] '
+                        markup: True
+                    Label:
+                        text: 'False'
+                        size_hint: None, None
+                BoxLayout:
+                    Label:
+                        size_hint: None, None
+                        text: '[b]Row:[/b] '
+                        markup: True
+                    Label:
+                        text: '1'
+                        size_hint: None, None
+                BoxLayout:
+                    Label:
+                        size_hint: None, None
+                        text: '[b]Column:[/b] '
+                        markup: True
+                    Label:
+                        text: '1'
+                        size_hint: None, None
+                BoxLayout:
+                    Label:
+                        size_hint: None, None
+                        text: '[b]Goto Tile:[/b] '
+                        markup: True
+                    TextInput:
+                        text: ''
+                        size_hint: None, .5
+                        pos_hint: {'y': .5}
+                BoxLayout:
+                    Label:
+                        size_hint: None, None
+                        text: '[b]Goto Object:[/b] '
+                        markup: True
+                    TextInput:
+                        text: ''
+                        size_hint: None, .5
+                        pos_hint: {'y': .5}
             RelativeLayout:
                 pos_hint: {'center_x': .5, 'center_y': .5}
                 size_hint: .9, .9
@@ -260,6 +306,21 @@ Root:
             Button:
                 text: "Okay"
                 on_release: root.okay()
+
+<SizeDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        Label:
+            text: root.message
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Okay"
+                on_release: root.okay()
+
 
 <TilesV1@BoxLayout>
     image1: 'resources/question_mark.png'
