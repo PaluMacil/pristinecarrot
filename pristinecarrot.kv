@@ -78,6 +78,7 @@ Root:
                         markup: True
                         size_hint: None, None
                     Label:
+                        id: triage_committed_label
                         text: 'False'
                         size_hint: None, None
                 BoxLayout:
@@ -86,6 +87,7 @@ Root:
                         text: '[b]Discarded:[/b] '
                         markup: True
                     Label:
+                        id: triage_discarded_label
                         text: 'False'
                         size_hint: None, None
                 BoxLayout:
@@ -94,7 +96,8 @@ Root:
                         text: '[b]Row:[/b] '
                         markup: True
                     Label:
-                        text: '1'
+                        id: triage_row
+                        text: ''
                         size_hint: None, None
                 BoxLayout:
                     Label:
@@ -102,23 +105,28 @@ Root:
                         text: '[b]Column:[/b] '
                         markup: True
                     Label:
-                        text: '1'
+                        id: triage_column
+                        text: ''
                         size_hint: None, None
                 BoxLayout:
-                    Label:
-                        size_hint: None, None
-                        text: '[b]Goto Tile:[/b] '
-                        markup: True
+                    Button:
+                        size_hint: None, .5
+                        pos_hint: {'y': .5}
+                        text: 'Goto Tile:'
+                        on_release: root.goto_specific_object_by_tile(triage_tile_id_input.text)
                     TextInput:
+                        id: triage_tile_id_input
                         text: ''
                         size_hint: None, .5
                         pos_hint: {'y': .5}
                 BoxLayout:
-                    Label:
-                        size_hint: None, None
-                        text: '[b]Goto Object:[/b] '
-                        markup: True
+                    Button:
+                        size_hint: None, .5
+                        pos_hint: {'y': .5}
+                        text: 'Goto Object:'
+                        on_release: root.goto_specific_object(triage_object_id_input.text)
                     TextInput:
+                        id: triage_object_id_input
                         text: ''
                         size_hint: None, .5
                         pos_hint: {'y': .5}

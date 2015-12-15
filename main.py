@@ -14,7 +14,8 @@ from config import setup_all, insert_newlines, purge_processed, \
 from spritemapper import analyze_spritesheet, slice_spritesheet
 from database import ImportFile, SpriteTile, GameObject, db, \
     get_first_object, get_right_object, get_left_object, get_up_object, get_down_object, \
-    commit_game_object, discard_tile, retriage_tile, retriage_object
+    commit_game_object, discard_tile, retriage_tile, retriage_object, \
+    get_tile_col_num, get_row_size, get_first_tile_id, get_specific_object, get_specific_object_by_tile
 from os.path import basename
 
 
@@ -160,6 +161,13 @@ class Root(TabbedPanel):
             self.triage_area = triage_area
             self.ids.triage_tile_id.text = str(self.current_tile_id)
             self.ids.triage_object_id.text = str(self.current_object[0].game_object.id)
+            batch = App.get_running_app().root.ids.triage_batch_spinner.text
+            row_size = get_row_size(batch)
+            relative_tile_id = self.current_tile_id - get_first_tile_id(batch) + 1
+            self.ids.triage_row.text = str((relative_tile_id // row_size) + 1)
+            self.ids.triage_column.text = str(get_tile_col_num(row_size, relative_tile_id))
+            self.ids.triage_committed_label.text = str(self.current_object[0].game_object.committed)
+            self.ids.triage_discarded_label.text = str(self.current_object[0].sprite_tile.discard)
             if self.current_object[0].game_object.size == 1:
                 image_area = Factory.TilesV1()
                 image1 = self.get_image_for(self.current_object, 1)
@@ -273,7 +281,29 @@ class Root(TabbedPanel):
             retriage_tile(self.current_tile_id)
         if committed:
             retriage_object(self.current_object[0].game_object.id)
-        # TODO: Use future goto_tile(tile_id) to reset instead of duplicating label code and modifying current object.
+        self.goto_specific_object_by_tile(self.current_tile_id)
+
+    def goto_specific_object_by_tile(self, tile_id):
+        if is_int(tile_id):
+            triage_area = App.get_running_app().root.ids.triage_area
+            batch = App.get_running_app().root.ids.triage_batch_spinner.text
+            if batch != '(select batch)':
+                next_object, next_tile_id = get_specific_object_by_tile(int(tile_id))
+                if next_object and next_tile_id:
+                    triage_area.clear_widgets()
+                    self.current_object, self.current_tile_id = next_object, next_tile_id
+                    self.update_triage_area(triage_area)
+
+    def goto_specific_object(self, object_id):
+        if is_int(object_id):
+            triage_area = App.get_running_app().root.ids.triage_area
+            batch = App.get_running_app().root.ids.triage_batch_spinner.text
+            if batch != '(select batch)':
+                next_object, next_tile_id = get_specific_object(int(object_id))
+                if next_object and next_tile_id:
+                    triage_area.clear_widgets()
+                    self.current_object, self.current_tile_id = next_object, next_tile_id
+                    self.update_triage_area(triage_area)
 
     def on_checkbox_active(self, checkbox, active):
         if checkbox == 'discarded':

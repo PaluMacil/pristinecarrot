@@ -257,6 +257,28 @@ def get_down_object(batch, current_tile_id, ignore_committed=None, ignore_discar
     return game_object_data, next_sprite_tile_id
 
 
+def get_specific_object(object_id):
+    next_sprite_tile_id = (db.query(func.max(SpriteTile.id))
+                           .join(GameObject)
+                           .filter(GameObject.id == object_id)
+                           ).scalar()
+    if not next_sprite_tile_id:
+        return None, None
+    game_object_data = (db.query(GameObject, SpriteTile)
+                        .join(SpriteTile)
+                        .filter(SpriteTile.game_object_id == next_sprite_tile_id)
+                        ).all()
+    return game_object_data, next_sprite_tile_id
+
+
+def get_specific_object_by_tile(tile_id):
+    game_object_data = (db.query(GameObject, SpriteTile)
+                        .join(SpriteTile)
+                        .filter(SpriteTile.id == tile_id)
+                        ).all()
+    return game_object_data, tile_id
+
+
 def commit_game_object(object_id):
     db.query(GameObject).filter(GameObject.id == object_id).update({"committed": True})
     db.commit()
@@ -275,6 +297,21 @@ def retriage_tile(tile_id):
 def retriage_object(object_id):
     db.query(GameObject).filter(GameObject.id == object_id).update({"committed": False})
     db.commit()
+
+
+def get_row_size(batch):
+    row_size = (db.query(ImportFile.row_size)
+                .filter(ImportFile.name == batch)
+                ).scalar()
+    return row_size
+
+
+def get_first_tile_id(batch):
+    first_id = (db.query(func.min(SpriteTile.id))
+                .join(ImportFile)
+                .filter(ImportFile.name == batch)
+                ).scalar()
+    return first_id
 
 
 def get_tile_col_num(row_size, tile_id):
