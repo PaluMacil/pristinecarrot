@@ -16,10 +16,6 @@ Root:
         text: 'Tile Triage'
         RelativeLayout:
             RelativeLayout:
-                pos_hint: {'center_x': .5, 'center_y': .5}
-                size_hint: .9, .9
-                id: triage_area
-            RelativeLayout:
                 size_hint: 1, 0.067
                 pos_hint: {"x": 0, "y": .930 }
                 Label:
@@ -72,10 +68,21 @@ Root:
                     pos_hint: {"x": 0.860 }
                     size_hint: .083, 1
                     text: 'Discarded'
-
+            RelativeLayout:
+                pos_hint: {"x": 0, "y": .2 }
+                size_hint: .25, .733
+                Label:
+                    pos_hint: {"x": 0, "y": .1}
+                    size_hint: .083, 1
+                    text: '[b]Discarded:[/b] '
+                    markup: True
+            RelativeLayout:
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                size_hint: .9, .9
+                id: triage_area
             BoxLayout:
-                size_hint: .900, .200
-                pos_hint: {"x": .050, "y": .033 }
+                size_hint: 1, .200
+                pos_hint: {"x": 0, "y": 0 }
                 BoxLayout:
                     orientation: "vertical"
                     Button:

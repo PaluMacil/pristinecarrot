@@ -14,7 +14,7 @@ from config import setup_all, insert_newlines, purge_processed, \
 from spritemapper import analyze_spritesheet, slice_spritesheet
 from database import ImportFile, SpriteTile, GameObject, db, \
     get_first_object, get_right_object, get_left_object, get_up_object, get_down_object, \
-    commit_game_object, discard_tile
+    commit_game_object, discard_tile, retriage_tile, retriage_object
 from os.path import basename
 
 
@@ -240,12 +240,40 @@ class Root(TabbedPanel):
 
     def commit(self):
         commit_game_object(self.current_object[0].game_object.id)
+        if self.ignore_committed:
+            self.show_available_tile()
 
     def discard(self):
         discard_tile(self.current_tile_id)
+        if self.ignore_discarded:
+            self.show_available_tile()
+
+    def show_available_tile(self):
+        batch = App.get_running_app().root.ids.triage_batch_spinner.text
+        next_object, next_tile_id = get_left_object(batch, self.current_tile_id,
+                                                    ignore_committed=self.ignore_committed,
+                                                    ignore_discarded=self.ignore_discarded)
+        triage_area = App.get_running_app().root.ids.triage_area
+        triage_area.clear_widgets()
+        if not next_object or not next_tile_id:
+            next_object, next_tile_id = get_right_object(batch, self.current_tile_id,
+                                                         ignore_committed=self.ignore_committed,
+                                                         ignore_discarded=self.ignore_discarded)
+        if next_object and next_tile_id:
+            self.current_object, self.current_tile_id = next_object, next_tile_id
+            self.update_triage_area(triage_area)
+        else:
+            self.current_object, self.current_tile_id = None, None
+            App.get_running_app().root.ids.triage_batch_spinner.text = '(select batch)'
 
     def retriage(self):
-        pass
+        committed = self.current_object[0].game_object.committed
+        discarded = self.current_object[0].game_object.discard
+        if discarded:
+            retriage_tile(self.current_tile_id)
+        if committed:
+            retriage_object(self.current_object[0].game_object.id)
+        # TODO: Use future goto_tile(tile_id) to reset instead of duplicating label code and modifying current object.
 
     def on_checkbox_active(self, checkbox, active):
         if checkbox == 'discarded':

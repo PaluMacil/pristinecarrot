@@ -267,10 +267,14 @@ def discard_tile(tile_id):
     db.commit()
 
 
-def retriage(id):
-    # TODO: I will need to determine if I'm dealing with tile or game object and
-    # what to do with associations.
-    pass
+def retriage_tile(tile_id):
+    db.query(SpriteTile).filter(SpriteTile.id == tile_id).update({"discard": False})
+    db.commit()
+
+
+def retriage_object(object_id):
+    db.query(GameObject).filter(GameObject.id == object_id).update({"committed": False})
+    db.commit()
 
 
 def get_tile_col_num(row_size, tile_id):
