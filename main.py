@@ -4,8 +4,7 @@ from kivy.core.window import Window
 from kivy.logger import Logger
 from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import ObjectProperty
-from kivy.properties import StringProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.popup import Popup
 from kivy.factory import Factory
 from os.path import join
@@ -339,6 +338,12 @@ class InfoDialog(FloatLayout):
 
 
 class InputDialog(FloatLayout):
+    message = StringProperty(None)
+    user_input = StringProperty(None)
+    okay = ObjectProperty(None)
+
+
+class SizeDialog(FloatLayout):
     message = StringProperty(None)
     user_input = StringProperty(None)
     okay = ObjectProperty(None)
