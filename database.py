@@ -284,6 +284,17 @@ def commit_game_object(object_id):
     db.commit()
 
 
+def resize_game_object(object_id, size):
+    db.query(GameObject).filter(GameObject.id == object_id).update({"size": size})
+    db.commit()
+
+
+def attach_to_game_object(tile_id, object_id, tile_number):
+    db.query(SpriteTile).filter(SpriteTile.id == tile_id).update({"game_object_id": object_id,
+                                                                  "tile_number": tile_number})
+    db.commit()
+
+
 def discard_tile(tile_id):
     db.query(SpriteTile).filter(SpriteTile.id == tile_id).update({"discard": True})
     db.commit()

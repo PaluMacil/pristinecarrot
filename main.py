@@ -13,7 +13,7 @@ from config import setup_all, insert_newlines, purge_processed, \
 from spritemapper import analyze_spritesheet, slice_spritesheet
 from database import ImportFile, SpriteTile, GameObject, db, \
     get_first_object, get_right_object, get_left_object, get_up_object, get_down_object, \
-    commit_game_object, discard_tile, retriage_tile, retriage_object, \
+    commit_game_object, discard_tile, retriage_tile, retriage_object, resize_game_object, attach_to_game_object, \
     get_tile_col_num, get_row_size, get_first_tile_id, get_specific_object, get_specific_object_by_tile
 from os.path import basename
 
@@ -245,6 +245,18 @@ class Root(TabbedPanel):
                     return False
         return True
 
+    def ask_size(self):
+        size_dialog = SizeDialog(okay=self.dismiss_popup,
+                                 resize=self.resize)
+        self.popup = Popup(title="Pick an Object Size", content=size_dialog,
+                           size_hint=(0.9, 0.7))
+        self.popup.open()
+
+    def resize(self, size):  # resize_game_object, attach_to_game_object
+        if self.current_tile_id and is_int(size):
+            resize_game_object(self.current_object[0].game_object.id, int(size))
+            self.goto_specific_object_by_tile(self.current_tile_id)
+
     def commit(self):
         commit_game_object(self.current_object[0].game_object.id)
         if self.ignore_committed:
@@ -344,9 +356,8 @@ class InputDialog(FloatLayout):
 
 
 class SizeDialog(FloatLayout):
-    message = StringProperty(None)
-    user_input = StringProperty(None)
     okay = ObjectProperty(None)
+    resize = ObjectProperty(None)
 
 
 class PristineCarrotApp(App):

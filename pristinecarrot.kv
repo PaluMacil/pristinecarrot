@@ -141,6 +141,7 @@ Root:
                     orientation: "vertical"
                     Button:
                         text: 'Resize'
+                        on_release: root.ask_size()
                     Button:
                         text: 'Attach'
                     Button:
@@ -321,12 +322,19 @@ Root:
         pos: root.pos
         orientation: "vertical"
         Label:
-            text: root.message
+            text: "Please pick a size:"
+        Spinner:
+            id: size_dialog_spinner
+            pos_hint: {"x": 0.338 }
+            size_hint: .247, 1
+            text: '(select size)'
+            values: '1','2','3'
+            on_text: root.resize(self.text)
         BoxLayout:
             size_hint_y: None
             height: 30
             Button:
-                text: "Okay"
+                text: "Close"
                 on_release: root.okay()
 
 
@@ -351,20 +359,24 @@ Root:
     BoxLayout
         orientation: "horizontal"
         Image:
+            size_hint: None, None
             size: dp(64),dp(64)
             allow_stretch: True
             source: root.image1
         Image:
+            size_hint: None, None
             size: dp(64),dp(64)
             allow_stretch: True
             source: root.image2
     BoxLayout
         orientation: "horizontal"
         Image:
+            size_hint: None, None
             size: dp(64),dp(64)
             allow_stretch: True
             source: root.image3
         Image:
+            size_hint: None, None
             size: dp(64),dp(64)
             allow_stretch: True
             source: root.image4
